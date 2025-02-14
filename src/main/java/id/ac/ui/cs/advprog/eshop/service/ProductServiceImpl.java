@@ -21,11 +21,21 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> listAll() {
+    public List<Product> findAll() {
         Iterator<Product> productIterator = productRepository.findAll();
-        List<Product> allProduct = new ArrayList<>();
-        productIterator.forEachRemaining(allProduct::add);
-        return allProduct;
+        List<Product> products = new ArrayList<>();
+
+        productIterator.forEachRemaining(products::add);
+        return products;
     }
 
+    @Override
+    public Product findById(String id) {
+        return productRepository.findById(id);
+    }
+
+    @Override
+    public Product update(Product product) {
+        return productRepository.update(product);
+    }
 }
