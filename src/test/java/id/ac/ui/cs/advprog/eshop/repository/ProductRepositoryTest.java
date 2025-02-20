@@ -185,7 +185,7 @@ class ProductRepositoryTest {
     }
 
     @Test
-    void testFindById() {
+    void testFindByIdSuccess() {
         Product product = new Product();
         product.setProductId("123e4567-e89b-12d3-a456-556642440000");
         product.setProductName("Product 1");
@@ -195,7 +195,19 @@ class ProductRepositoryTest {
         Product savedProduct = productRepository.findById("123e4567-e89b-12d3-a456-556642440000");
 
         assertEquals(product, savedProduct);
+    }
 
+    @Test
+    void testFindByIdNotFound() {
+        Product product = new Product();
+        product.setProductId("123e4567-e89b-12d3-a456-556642440000");
+        product.setProductName("Product 1");
+        product.setProductQuantity(100);
+        productRepository.create(product);
+
+        Product nonExistent = productRepository.findById("1");
+
+        assertNull(nonExistent);
     }
 
     @Test
@@ -229,8 +241,20 @@ class ProductRepositoryTest {
 
         Product result = productRepository.update(product);
         assertNull(result);
-        Product edited = productRepository.findById("123e4567-e89b-12d3-a456-556642440000");
-        assertNull(edited);
+
+        // save the product but don't use the same ID later
+        productRepository.create(product);
+
+        // set decoy product
+        Product decoy = new Product();
+        decoy.setProductId("decoy");
+        decoy.setProductName("Dummy Yeah");
+        decoy.setProductQuantity(200);
+
+        Product result2 = productRepository.update(decoy);
+
+        // make sure no product updated
+        assertNull(result2);
     }
 
     @Test
@@ -256,8 +280,23 @@ class ProductRepositoryTest {
         p.setProductName("Dummy Product");
         p.setProductQuantity(100);
 
+        // delete nonexistent product
         productRepository.delete("123e4567-e89b-12d3-a456-556642440000");
+
+        // save the product but don't use the same ID later
+        productRepository.create(p);
+
+        // set decoy product
+        Product decoy = new Product();
+        decoy.setProductId("decoy");
+        decoy.setProductName("Dummy Yeah");
+        decoy.setProductQuantity(200);
+
+        productRepository.delete(decoy.getProductId());
+
         Iterator<Product> productIterator = productRepository.findAll();
-        assertFalse(productIterator.hasNext());
+
+        // shouldn't be deleted because we were trying to delete the decoy
+        assertTrue(productIterator.hasNext());
     }
 }
