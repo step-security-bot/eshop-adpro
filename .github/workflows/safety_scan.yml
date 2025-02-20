@@ -1,5 +1,5 @@
 
-name: Example workflow for Python using Safety Action
+name: Workflow with Safety Action
 
 on:
   push:  # Run on every push to any branch
