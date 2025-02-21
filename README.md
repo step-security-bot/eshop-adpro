@@ -73,3 +73,41 @@ The new functional test suite for verifying product list items raises several cl
 To improve the functional test, we can do the following:
 - Create a base class for the tests
 - Making sure we get our constants values (e.g. Base URL, product ID, product name) come from one source (e.g. env file).
+
+# Reflection 3: CI/CD & DevOps
+
+> You have implemented a CI/CD process that automatically runs the test suites, analyzes code quality, and deploys to a PaaS. Try to answer the following questions in order to reflect on your attempt completing the tutorial and exercise.
+> 1. List the code quality issue(s) that you fixed during the exercise and explain your strategy on fixing them.
+> 2. Look at your CI/CD workflows (GitHub)/pipelines (GitLab). Do you think the current implementation has met the definition of Continuous Integration and Continuous Deployment? Explain the reasons (minimum 3 sentences)!
+
+## Code Quality Improvement
+
+During the CI/CD implementation, I encountered and fixed several code quality issues to ensure a smoother automated workflow. Below are the key issues I addressed and my approach to resolving them:
+
+1. Token-Permission Issue
+Problem: The GitHub Actions workflow lacked appropriate permission settings, leading to potential security risks and failures in accessing necessary resources.
+Solution: I added top-level permission settings in the GitHub Actions script to explicitly define the required access level. This ensured that workflows had the correct permissions to execute securely while preventing unauthorized actions.
+
+2. Dependency Management and Updates
+Problem: Keeping dependencies updated manually was inefficient and posed security risks due to outdated libraries.
+Solution: I introduced multiple automated dependency management bots:
+Renovatebot: Automates dependency updates and creates pull requests with version changes.
+Dependabot: Provides security updates for dependencies.
+
+4. Version Pinning in GitHub Actions
+Problem: Using floating versions for GitHub Actions scripts posed a risk of unexpected behavior due to updates.
+Solution: I configured Renovatebot to automatically pin versions using commit hashes instead of tags. This ensures that the workflow runs on a fixed, tested version, improving reliability.
+
+5. Branch Protection Rules
+Problem: The repository allowed direct pushes to the main branch, which could lead to unreviewed changes being merged.
+Solution: I enforced branch protection rules, requiring:
+No direct pushes to main.
+Merge restrictions so that changes require approval before being merged.
+CI/CD checks to pass before merging, ensuring quality control.
+By implementing these fixes, I enhanced the security, maintainability, and reliability of the CI/CD pipeline while enforcing best practices in code quality and dependency management.
+
+## CI/CD Implementation
+
+My current CI/CD implementation meets the definition of Continuous Integration and Continuous Deployment. My CI process ensures that every code change is automatically tested, analyzed for code quality, and checked for security vulnerabilities before being merged. This guarantees that only well-tested and high-quality code reaches the main branch.
+
+For CD, my deployment to Koyeb is fully automated, meaning every successful change is immediately deployed without manual intervention. This aligns with the principles of Continuous Deployment, where new updates are pushed to production as soon as they pass all necessary checks. With this setup, I have achieved an efficient workflow that minimizes delays and ensures rapid, reliable software releases.
